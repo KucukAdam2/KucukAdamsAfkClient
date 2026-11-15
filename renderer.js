@@ -40,3 +40,26 @@ document.getElementById('all').onclick=async()=>{
 };
 document.getElementById('stopAll').onclick=()=>window.client.disconnectAll();
 document.getElementById('clear').onclick=()=>logs.replaceChildren();
+// --- Sohbete yazma ---
+const chatTarget=document.getElementById('chatTarget'), chatText=document.getElementById('chatText');
+function fillTargets(){
+  const keep=chatTarget.value||'*';
+  chatTarget.replaceChildren(new Option('Tüm hesaplar','*'));
+  for(const row of accountsEl.children){
+    const n=row.querySelector('input').value.trim();
+    if(n) chatTarget.appendChild(new Option(n,n));
+  }
+  chatTarget.value=[...chatTarget.options].some(o=>o.value===keep)?keep:'*';
+}
+fillTargets();
+chatTarget.addEventListener('mousedown',fillTargets);
+chatTarget.addEventListener('focus',fillTargets);
+async function sendChat(){
+  const text=chatText.value;
+  if(!text.trim()) return;
+  const r=await window.client.chat({name:chatTarget.value,text});
+  if(r.ok){ log(`Sohbete gönderildi (${r.sent} hesap): ${text}`); chatText.value=''; }
+  else log(`Mesaj gönderilemedi: ${r.error}`);
+}
+document.getElementById('chatSend').onclick=sendChat;
+chatText.addEventListener('keydown',e=>{ if(e.key==='Enter') sendChat(); });

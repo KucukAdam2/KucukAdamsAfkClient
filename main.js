@@ -172,6 +172,19 @@ ipcMain.handle('connect-bot', async (_event, data) => {
   startBot(s);
   return { ok: true };
 });
+ipcMain.handle('send-chat', async (_event, data) => {
+  const name = data && data.name;
+  const text = String((data && data.text) || '').slice(0, 250);
+  if (!text.trim()) return { ok: false, error: 'Mesaj boş.' };
+  const targets = name === '*' ? [...sessions.values()] : [sessions.get(name)];
+  let sent = 0;
+  for (const s of targets) {
+    if (!s || !s.bot || !s.spawned) continue;
+    try { s.bot.chat(text); sent++; } catch {}
+    if (targets.length > 1) await new Promise(r => setTimeout(r, 1200)); // spam engeline takılmasın
+  }
+  return sent ? { ok: true, sent } : { ok: false, error: 'Oyunda olan hesap yok (önce hesabı başlat ve oyuna girmesini bekle).' };
+});
 ipcMain.handle('disconnect-bot', async (_event, name) => {
   if (sessions.has(name)) stopSession(name, 'Kullanıcı tarafından durduruldu');
   else sendStatus(name, 'Durduruldu');
