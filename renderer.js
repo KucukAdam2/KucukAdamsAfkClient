@@ -7,12 +7,12 @@ function log(text) {
 }
 for (let i=1;i<=10;i++) {
   const row=document.createElement('div'); row.className='account';
-  row.innerHTML=`<span class="number">${String(i).padStart(2,'0')}</span><input class="username" maxlength="16" placeholder="Hesap ${i} adı"><span class="status">Bekliyor</span><button class="start">Başlat</button><button class="stop secondary">Durdur</button>`;
+  row.innerHTML=`<span class="number">${String(i).padStart(2,'0')}</span><input class="username" maxlength="16" placeholder="Hesap ${i} adı"><input class="password" type="password" placeholder="Giriş şifresi (isteğe bağlı)"><span class="status">Bekliyor</span><button class="start">Başlat</button><button class="stop secondary">Durdur</button>`;
   const input=row.querySelector('input'), status=row.querySelector('.status');
   row.querySelector('.start').addEventListener('click', async()=>{
     const name=input.value.trim(), host=document.getElementById('host').value.trim();
     if(!name || !host) return log('Önce hesap adını ve sunucu IP adresini gir.');
-    const result=await window.client.connect({name,host,port:document.getElementById('port').value,version:document.getElementById('version').value});
+    const result=await window.client.connect({name,host,port:document.getElementById('port').value,version:document.getElementById('version').value,password:row.querySelector('.password').value,authMode:document.getElementById('authMode').value});
     if(!result.ok) log(`${name}: ${result.error}`); else log(`${name}: bağlantı başlatıldı.`);
   });
   row.querySelector('.stop').addEventListener('click', async()=>{

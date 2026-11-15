@@ -7,9 +7,10 @@
 <label>Sunucu IP<input id="host" placeholder="sunucu.adresi.net"></label>
 <label>Port<input id="port" type="number" value="25565"></label>
 <label class="version">Minecraft sürümü<select id="version"><option value="auto">Otomatik algıla</option><option>1.21.11</option><option>1.21.10</option><option>1.21.8</option><option>1.21.4</option><option>1.20.4</option><option>1.19.4</option><option>1.16.5</option></select></label>
+<label>Giriş komutu (şifre girilen hesaplar için)<select id="authMode"><option value="login">/login şifre</option><option value="register">/register şifre şifre (ilk giriş)</option><option value="none">Gönderme</option></select></label>
 </div><p class="hint">Offline giriş yalnızca sunucunun offline/cracked girişe izin verdiği sunucularda çalışır.</p></section>
 <section class="panel"><div class="section-head"><h2>Hesaplar <small>10 slot</small></h2><button id="all" class="primary">Tümünü başlat</button><button id="stopAll" class="secondary">Tümünü durdur</button></div>
 <div id="accounts" class="accounts"></div></section>
 <section class="panel"><div class="section-head"><h2>Bağlantı kayıtları</h2><button id="clear" class="secondary">Temizle</button></div><div id="logs" class="logs"><p>Hazır. Sunucu bilgilerini ve hesap adlarını gir.</p></div></section>
-<section class="note"><b>Sohbet gizliliği:</b> Sohbet mesajları arayüzde gösterilmez; istemci sohbet dinleyicisi eklemez ve otomatik mesaj göndermez.</section>
+<section class="note"><b>Sohbet gizliliği:</b> Sohbet mesajları arayüzde gösterilmez ve istemci sohbeti dinlemez. Yalnızca bir hesap için giriş şifresi yazdıysan, sunucuya girince tek bir giriş komutu gönderir.</section>
 </main><footer>KucukAdamsAfkClient • Windows</footer><script src="renderer.js"></script></body></html>

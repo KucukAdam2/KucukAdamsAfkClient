@@ -20,7 +20,7 @@ function createWindow() {
 app.whenReady().then(createWindow);
 
 ipcMain.handle('connect-bot', async (_event, data) => {
-  const { name, host, port, version } = data;
+  const { name, host, port, version, password, authMode } = data;
   if (!name || !host) return { ok: false, error: 'Hesap adı ve sunucu adresi gerekli.' };
   if (bots.has(name)) return { ok: false, error: 'Bu hesap zaten çalışıyor.' };
   config = { host, port: Number(port) || 25565, version };
@@ -33,8 +33,15 @@ ipcMain.handle('connect-bot', async (_event, data) => {
     bots.set(name, bot);
     sendStatus(name, 'Bağlanıyor');
     bot.once('login', () => sendStatus(name, 'Giriş yapıldı'));
-    bot.once('spawn', () => sendStatus(name, 'AFK / Oyunda'));
-    // Sohbet mesajları özellikle dinlenmez ve hiçbir mesaj gönderilmez.
+    bot.once('spawn', () => {
+      sendStatus(name, 'AFK / Oyunda');
+      if (password && authMode !== 'none') {
+        setTimeout(() => {
+          try { bot.chat(authMode === 'register' ? `/register ${password} ${password}` : `/login ${password}`); } catch {}
+        }, 3000);
+      }
+    });
+    // Sohbet dinlenmez. Yalnızca şifre girildiyse girişte tek bir /login (veya /register) gönderilir.
     bot.on('kicked', () => sendStatus(name, 'Atıldı'));
     bot.on('end', () => { bots.delete(name); sendStatus(name, 'Bağlantı kesildi'); });
     bot.on('error', err => sendStatus(name, 'Hata', String(err.message || err).slice(0, 140)));
