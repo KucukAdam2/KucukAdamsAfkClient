@@ -12,6 +12,7 @@ for (let i=1;i<=10;i++) {
   row.querySelector('.start').addEventListener('click', async()=>{
     const name=input.value.trim(), host=document.getElementById('host').value.trim();
     if(!name || !host) return log('Önce hesap adını ve sunucu IP adresini gir.');
+    if(!/^[A-Za-z0-9_]{3,16}$/.test(name)) log(`${name}: uyarı: kullanıcı adı 3-16 karakter olmalı, yalnızca harf, rakam ve _ içermeli.`);
     const result=await window.client.connect({name,host,port:document.getElementById('port').value,version:document.getElementById('version').value,password:row.querySelector('.password').value,authMode:document.getElementById('authMode').value});
     if(!result.ok) log(`${name}: ${result.error}`); else log(`${name}: bağlantı başlatıldı.`);
   });
@@ -27,11 +28,15 @@ window.client.onStatus(({name,status,detail})=>{
   const row=rowFor(name); if(row) row.querySelector('.status').textContent=status;
   log(`${name}: ${status}${detail ? ' — '+detail : ''}`);
 });
+let starting=false;
 document.getElementById('all').onclick=async()=>{
+  if(starting) return;
+  starting=true;
   for(const row of accountsEl.children) {
     const name=row.querySelector('input').value.trim();
-    if(name) row.querySelector('.start').click();
+    if(name) { row.querySelector('.start').click(); await new Promise(r=>setTimeout(r,4000)); } // sunucu hızlı girişi engellemesin
   }
+  starting=false;
 };
 document.getElementById('stopAll').onclick=()=>window.client.disconnectAll();
 document.getElementById('clear').onclick=()=>logs.replaceChildren();
