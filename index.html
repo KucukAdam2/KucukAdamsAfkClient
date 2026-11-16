@@ -8,7 +8,7 @@
 <label>Port<input id="port" type="number" value="25565"></label>
 <label class="version">Minecraft sürümü<select id="version"><option value="auto">Otomatik algıla</option><option>1.21.11</option><option>1.21.10</option><option>1.21.8</option><option>1.21.4</option><option>1.20.4</option><option>1.19.4</option><option>1.16.5</option></select></label>
 <label>Giriş komutu (şifre girilen hesaplar için)<select id="authMode"><option value="login">/login şifre</option><option value="register">/register şifre şifre (ilk giriş)</option><option value="none">Gönderme</option></select></label>
-</div><p class="hint">Offline giriş yalnızca sunucunun offline/cracked girişe izin verdiği sunucularda çalışır.</p></section>
+</div><label class="check"><input type="checkbox" id="autoRe" checked> Atılınca / bağlantı kopunca otomatik yeniden bağlan</label><p class="hint">Offline giriş yalnızca sunucunun offline/cracked girişe izin verdiği sunucularda çalışır.</p></section>
 <section class="panel"><div class="section-head"><h2>Hesaplar <small>10 slot</small></h2><button id="all" class="primary">Tümünü başlat</button><button id="stopAll" class="secondary">Tümünü durdur</button></div>
 <div id="accounts" class="accounts"></div></section>
 <section class="panel"><h2>Sohbete yaz</h2><div class="chatbox"><select id="chatTarget"></select><input id="chatText" maxlength="250" placeholder="Mesaj ya da /komut yaz, Enter ile gönder"><button id="chatSend" class="primary">Gönder</button></div><p class="hint">Mesaj, seçtiğin hesaptan (ya da hepsinden) sohbete yazılır. Birden fazla hesapta mesajlar 1 sn arayla gider.</p></section>

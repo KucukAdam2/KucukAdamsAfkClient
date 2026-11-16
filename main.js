@@ -49,6 +49,12 @@ function scheduleReconnect(s) {
   if (!s.wantRun) return;
   const name = s.params.name;
   const reason = s.lastReason || 'bağlantı kesildi';
+  if (!s.params.autoReconnect) {
+    s.wantRun = false;
+    sessions.delete(name);
+    sendStatus(name, 'Bağlantı kesildi', reason);
+    return;
+  }
   // Yasak / beyaz liste gibi durumlarda boşuna tekrar deneme
   if (/banned|yasaklan|not whitelisted|white-?list|beyaz liste/i.test(reason)) {
     s.wantRun = false;
@@ -71,7 +77,7 @@ function startBot(s) {
     bot = mineflayer.createBot({
       host, port, username: name,
       auth: 'offline', version: version === 'auto' ? false : version,
-      hideErrors: true, checkTimeoutInterval: 60000
+      hideErrors: false
     });
   } catch (err) {
     s.lastReason = errText(err);
@@ -83,6 +89,11 @@ function startBot(s) {
   s.spawned = false;
   let ended = false;
   sendStatus(name, s.retry ? `Yeniden bağlanıyor (${s.retry}. deneme)` : 'Bağlanıyor');
+
+  clearTimeout(s.hintTimer);
+  s.hintTimer = setTimeout(() => {
+    if (!s.spawned && s.bot === bot) sendStatus(name, 'Bağlanıyor', 'sunucudan yanıt bekleniyor...');
+  }, 12000);
 
   // 30 sn içinde oyuna girilemezse bağlantıyı iptal edip yeniden dene
   clearTimeout(s.loginTimer);
@@ -99,6 +110,7 @@ function startBot(s) {
     if (ended) return;
     ended = true;
     clearTimeout(s.loginTimer);
+    clearTimeout(s.hintTimer);
     if (s.bot !== bot) return;
     s.bot = null;
     if (s.wantRun) {
@@ -111,6 +123,7 @@ function startBot(s) {
   bot.once('spawn', () => {
     s.spawned = true; s.retry = 0; s.lastReason = '';
     clearTimeout(s.loginTimer);
+    clearTimeout(s.hintTimer);
     sendStatus(name, 'AFK / Oyunda');
     // Sohbet dinlenmez. Yalnızca şifre girildiyse girişte tek bir /login (veya /register) gönderilir.
     if (password && authMode !== 'none') {
@@ -140,6 +153,7 @@ function stopSession(name, msg) {
   if (!s) return;
   s.wantRun = false;
   clearTimeout(s.loginTimer);
+  clearTimeout(s.hintTimer);
   clearTimeout(s.retryTimer);
   sessions.delete(name);
   if (s.bot) { try { s.bot.quit(msg); } catch {} }
@@ -157,7 +171,7 @@ function createWindow() {
 app.whenReady().then(createWindow);
 
 ipcMain.handle('connect-bot', async (_event, data) => {
-  const { name, port, version, password, authMode } = data;
+  const { name, port, version, password, authMode, autoReconnect } = data;
   let host = String(data.host || '').trim().replace(/^\w+:\/\//, '').replace(/\/.*$/, '');
   let portNum = Number(port) || 25565;
   const m = host.match(/^(.+):(\d{1,5})$/); // "ip:port" yazıldıysa ayır
@@ -165,7 +179,7 @@ ipcMain.handle('connect-bot', async (_event, data) => {
   if (!name || !host) return { ok: false, error: 'Hesap adı ve sunucu adresi gerekli.' };
   if (sessions.has(name)) return { ok: false, error: 'Bu hesap zaten çalışıyor.' };
   const s = {
-    params: { name, host, port: portNum, version, password, authMode },
+    params: { name, host, port: portNum, version, password, authMode, autoReconnect: autoReconnect !== false },
     bot: null, wantRun: true, retry: 0, spawned: false, lastReason: '', loginTimer: null, retryTimer: null
   };
   sessions.set(name, s);

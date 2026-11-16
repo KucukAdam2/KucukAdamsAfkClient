@@ -13,7 +13,7 @@ for (let i=1;i<=10;i++) {
     const name=input.value.trim(), host=document.getElementById('host').value.trim();
     if(!name || !host) return log('Önce hesap adını ve sunucu IP adresini gir.');
     if(!/^[A-Za-z0-9_]{3,16}$/.test(name)) log(`${name}: uyarı: kullanıcı adı 3-16 karakter olmalı, yalnızca harf, rakam ve _ içermeli.`);
-    const result=await window.client.connect({name,host,port:document.getElementById('port').value,version:document.getElementById('version').value,password:row.querySelector('.password').value,authMode:document.getElementById('authMode').value});
+    const result=await window.client.connect({name,host,port:document.getElementById('port').value,version:document.getElementById('version').value,password:row.querySelector('.password').value,authMode:document.getElementById('authMode').value,autoReconnect:document.getElementById('autoRe').checked});
     if(!result.ok) log(`${name}: ${result.error}`); else log(`${name}: bağlantı başlatıldı.`);
   });
   row.querySelector('.stop').addEventListener('click', async()=>{
