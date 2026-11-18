@@ -4,5 +4,6 @@ contextBridge.exposeInMainWorld('client', {
   disconnect: name => ipcRenderer.invoke('disconnect-bot', name),
   disconnectAll: () => ipcRenderer.invoke('disconnect-all'),
   chat: data => ipcRenderer.invoke('send-chat', data),
-  onStatus: callback => ipcRenderer.on('bot-status', (_event, data) => callback(data))
+  onStatus: callback => ipcRenderer.on('bot-status', (_event, data) => callback(data)),
+  onChat: callback => ipcRenderer.on('bot-chat', (_event, data) => callback(data))
 });

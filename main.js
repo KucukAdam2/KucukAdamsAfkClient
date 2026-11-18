@@ -9,6 +9,9 @@ const sessions = new Map(); // hesap adı -> oturum
 process.on('uncaughtException', err => console.error('Beklenmeyen hata:', err));
 process.on('unhandledRejection', err => console.error('Beklenmeyen hata:', err));
 
+function pushChat(name, text) {
+  if (win && !win.isDestroyed()) win.webContents.send('bot-chat', { name, text: String(text).slice(0, 500) });
+}
 function sendStatus(name, status, detail = '') {
   if (win && !win.isDestroyed()) win.webContents.send('bot-status', { name, status, detail });
 }
@@ -125,13 +128,19 @@ function startBot(s) {
     clearTimeout(s.loginTimer);
     clearTimeout(s.hintTimer);
     sendStatus(name, 'AFK / Oyunda');
-    // Sohbet dinlenmez. Yalnızca şifre girildiyse girişte tek bir /login (veya /register) gönderilir.
+    // Şifre girildiyse girişte tek bir /login (veya /register) gönderilir.
     if (password && authMode !== 'none') {
       setTimeout(() => {
         if (s.bot !== bot) return;
         try { bot.chat(authMode === 'register' ? `/register ${password} ${password}` : `/login ${password}`); } catch {}
       }, 3000);
     }
+  });
+  // Sunucudan gelen sohbet/sistem mesajlarını konsola ilet
+  bot.on('messagestr', (message, position) => {
+    if (position === 'game_info') return;
+    const text = String(message).replace(/§./g, '').trim();
+    if (text) pushChat(name, text);
   });
   bot.on('kicked', reason => {
     s.lastReason = cleanReason(reason) || 'sebep belirtilmedi';
@@ -162,7 +171,7 @@ function stopSession(name, msg) {
 
 function createWindow() {
   win = new BrowserWindow({
-    width: 980, height: 760, minWidth: 760, minHeight: 600,
+    width: 1180, height: 780, minWidth: 960, minHeight: 620,
     backgroundColor: '#090d0b',
     webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, nodeIntegration: false }
   });
