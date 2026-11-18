@@ -3,21 +3,21 @@
 <title>KucukAdamsAfkClient</title><link rel="stylesheet" href="style.css"></head>
 <body>
 <div class="app">
-  <aside class="side">
-    <div class="brand"><h1>KucukAdams<span>Afk</span>Client</h1><p>Minecraft AFK konsolu • ayarlar otomatik kaydedilir</p></div>
-    <div class="box">
-      <label>Sunucu IP<input id="host" placeholder="sunucu.adresi.net" spellcheck="false" autocomplete="off"></label>
-      <div class="row2">
-        <label>Port<input id="port" type="number" value="25565"></label>
-        <label>Sürüm<select id="version"><option value="auto">Otomatik algıla</option><option>1.21.11</option><option>1.21.10</option><option>1.21.8</option><option>1.21.4</option><option>1.20.4</option><option>1.20.1</option><option>1.19.4</option><option>1.18.2</option><option>1.16.5</option><option>1.12.2</option><option>1.8.9</option></select></label>
-      </div>
-      <label>Giriş komutu (şifre yazılan hesaplar için)<select id="authMode"><option value="login">/login şifre</option><option value="register">/register şifre şifre (ilk giriş)</option><option value="none">Gönderme</option></select></label>
-      <label class="check"><input type="checkbox" id="autoRe" checked> Atılınca / kopunca otomatik yeniden bağlan</label>
+  <header class="top">
+    <div class="brand"><h1>KucukAdams<span>Afk</span>Client</h1><p>Ayarlar otomatik kaydedilir</p></div>
+    <div class="srv">
+      <label class="ip">Sunucu IP<input id="host" placeholder="sunucu.adresi.net" spellcheck="false" autocomplete="off"></label>
+      <label class="w90">Port<input id="port" type="number" value="25565"></label>
+      <label class="w150">Sürüm<select id="version"><option value="auto">Otomatik algıla</option><option>1.21.11</option><option>1.21.10</option><option>1.21.8</option><option>1.21.4</option><option>1.20.4</option><option>1.20.1</option><option>1.19.4</option><option>1.18.2</option><option>1.16.5</option><option>1.12.2</option><option>1.8.9</option></select></label>
+      <label class="w190">Giriş komutu<select id="authMode"><option value="login">/login şifre</option><option value="register">/register şifre şifre</option><option value="none">Gönderme</option></select></label>
+      <label class="check"><input type="checkbox" id="autoRe" checked> Otomatik yeniden bağlan</label>
     </div>
-    <div class="head"><b>Hesaplar</b><span class="mini"><button id="all" class="go">Tümünü başlat</button><button id="stopAll">Durdur</button></span></div>
+    <div class="mini"><button id="all" class="go">Tümünü başlat</button><button id="stopAll">Tümünü durdur</button></div>
+  </header>
+  <section class="accwrap">
     <div id="accounts" class="accounts"></div>
-    <p class="hint">Hesap adını değiştirirsen çalışan hesap durdurulur ve yeni isimle yeniden başlatılır. Şifreler güvenlik için kaydedilmez.</p>
-  </aside>
+    <p class="hint">Hesap adını değiştirirsen çalışan hesap durdurulur ve yeni isimle yeniden başlar. Şifreler güvenlik için kaydedilmez.</p>
+  </section>
   <section class="term">
     <div class="termbar"><span>● CONSOLE</span><select id="view"></select><button id="clear">Temizle</button></div>
     <div id="out" class="out"></div>

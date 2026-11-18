@@ -171,7 +171,7 @@ function stopSession(name, msg) {
 
 function createWindow() {
   win = new BrowserWindow({
-    width: 1180, height: 780, minWidth: 960, minHeight: 620,
+    width: 1320, height: 800, minWidth: 1100, minHeight: 680,
     backgroundColor: '#090d0b',
     webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, nodeIntegration: false }
   });

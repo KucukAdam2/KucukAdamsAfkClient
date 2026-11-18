@@ -1,1 +1,40 @@
-*{box-sizing:border-box}body{margin:0;background:#090d0b;color:#e5eee8;font:14px Segoe UI,Arial,sans-serif}header{display:flex;justify-content:space-between;align-items:center;padding:25px 5%;border-bottom:1px solid #203329;background:#0d1510}h1{margin:0;font-size:25px;letter-spacing:.3px}h1 span{color:#55e58b}header p,.hint,footer{color:#8da397}.pill{color:#65ee9b;border:1px solid #245b3b;background:#102419;padding:9px 12px;border-radius:20px;font-size:11px}main{max-width:1100px;margin:24px auto;padding:0 22px}.panel{background:#101813;border:1px solid #26372d;border-radius:12px;padding:18px;margin-bottom:17px}h2{font-size:16px;margin:0 0 16px}.fields{display:grid;grid-template-columns:2fr 1fr 1.2fr;gap:12px}label{display:grid;gap:7px;color:#a9b9ae;font-size:12px}input,select{width:100%;background:#080e0a;color:#e5eee8;border:1px solid #304438;border-radius:7px;padding:11px;outline:none}input:focus,select:focus{border-color:#55e58b}.hint{font-size:12px;margin:12px 0 0}.section-head{display:flex;align-items:center;gap:9px}.section-head h2{margin:0 auto 12px 0}small{color:#7f9487;font-weight:400}.accounts{display:grid;gap:8px}.account{display:grid;grid-template-columns:34px minmax(110px,1fr) minmax(110px,1fr) 125px 80px 80px;gap:9px;align-items:center;background:#0b120d;padding:8px;border-radius:8px}.number{color:#6c8c77;text-align:center}.status{color:#a8b9ad;font-size:12px}.button,button{border:0;border-radius:7px;padding:9px 12px;cursor:pointer;font-weight:600}.start,.primary{background:#36c875;color:#06130a}.secondary{background:#26352c;color:#d7e5db}.logs{height:135px;overflow:auto;background:#080e0a;border-radius:8px;padding:10px;color:#8ee5aa;font:12px Consolas,monospace}.logs p{margin:4px 0}.check{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:12px}.check input{width:auto}.chatbox{display:grid;grid-template-columns:190px 1fr 100px;gap:9px}.note{border-left:3px solid #36c875;background:#102017;padding:12px;color:#aebfb3;border-radius:4px;font-size:12px}footer{text-align:center;padding:18px;font-size:11px}@media(max-width:700px){.fields{grid-template-columns:1fr}.account{grid-template-columns:25px 1fr 1fr}.account .password{grid-column:2 / 4}.account .status{grid-column:2}.account button{grid-row:2}.section-head{flex-wrap:wrap}.section-head h2{width:100%}}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:#070b09;color:#dfeae3;font:13px "Segoe UI",Arial,sans-serif;overflow:hidden}
+.app{display:grid;grid-template-rows:auto auto minmax(0,1fr);height:100vh}
+.top{display:flex;align-items:flex-end;gap:16px;padding:12px 16px;background:#0c130f;border-bottom:1px solid #1d2d24}
+.brand h1{margin:0;font-size:19px;letter-spacing:.3px;white-space:nowrap}.brand h1 span{color:#55e58b}
+.brand p{margin:3px 0 0;color:#7f9487;font-size:11px}
+.srv{display:flex;align-items:flex-end;gap:10px;flex:1;min-width:0}
+.ip{flex:1;min-width:140px}.w90{width:90px}.w150{width:150px}.w190{width:190px}
+label{display:grid;gap:5px;color:#9fb2a6;font-size:11px}
+input,select{width:100%;background:#070d09;color:#e5eee8;border:1px solid #2b3f33;border-radius:6px;padding:8px 9px;outline:none;font:inherit}
+input:focus,select:focus{border-color:#55e58b}
+.check{display:flex;align-items:center;gap:7px;font-size:12px;color:#b6c7bb;white-space:nowrap;padding-bottom:8px}.check input{width:auto}
+.mini{display:flex;gap:6px}
+button{border:0;border-radius:6px;padding:8px 12px;cursor:pointer;font:inherit;font-weight:600;background:#26352c;color:#d7e5db;white-space:nowrap}
+button:hover{filter:brightness(1.18)}
+.go,.start{background:#36c875;color:#06130a}
+.accwrap{padding:10px 16px 8px;background:#0a110d;border-bottom:1px solid #1d2d24}
+.accounts{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.account{display:grid;gap:6px;background:#0f1812;border:1px solid #1f2f26;border-radius:8px;padding:8px}
+.ahead{display:grid;grid-template-columns:20px 1fr;gap:6px;align-items:center}
+.num{color:#6c8c77;font-size:11px;text-align:center}
+.actrl{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.account button{padding:6px 0}
+.status{font-size:11px;color:#8da397;display:flex;align-items:center;gap:6px;min-height:14px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.status::before{content:"";width:8px;height:8px;border-radius:50%;background:#4b5c52;flex:none}
+.account[data-state=run] .status::before{background:#36c875}
+.account[data-state=wait] .status::before{background:#e8c04a}
+.account[data-state=err] .status::before{background:#ef5b5b}
+.hint{color:#6f8478;font-size:11px;margin:7px 0 0}
+.term{display:flex;flex-direction:column;min-width:0;min-height:0}
+.termbar{display:flex;align-items:center;gap:10px;padding:8px 16px;border-bottom:1px solid #1d2d24;background:#0a110d;color:#65ee9b;font:12px Consolas,monospace}
+.termbar select{width:200px;margin-left:auto}
+.out{flex:1;min-height:0;overflow-y:auto;padding:10px 16px;font:13px/1.55 Consolas,"Cascadia Mono",monospace;background:#050806}
+.line{white-space:pre-wrap;word-break:break-word}
+.time{color:#4d6356;margin-right:8px}
+.tag{margin-right:8px;font-weight:700}
+.line.sys .msg{color:#86a592}.line.err .msg{color:#ff8a8a}.line.me .msg{color:#7cc4ff}.line.chat .msg{color:#e5eee8}
+.inputbar{display:grid;grid-template-columns:170px auto 1fr 90px;gap:8px;align-items:center;padding:10px 16px;border-top:1px solid #1d2d24;background:#0a110d}
+.prompt{color:#55e58b;font:bold 16px Consolas,monospace}

@@ -79,7 +79,7 @@ async function startRow(row) {
 
 for (let i = 1; i <= 10; i++) {
   const row = document.createElement('div'); row.className = 'account'; row.dataset.state = 'off';
-  row.innerHTML = `<span class="num">${String(i).padStart(2, '0')}</span><input class="username" maxlength="16" placeholder="Hesap ${i} adı" spellcheck="false" autocomplete="off"><input class="password" type="password" placeholder="Giriş şifresi" autocomplete="off"><button class="start" title="Başlat">▶</button><button class="stop" title="Durdur">■</button><span class="status">Bekliyor</span>`;
+  row.innerHTML = `<div class="ahead"><span class="num">${String(i).padStart(2, '0')}</span><input class="username" maxlength="16" placeholder="Hesap ${i} adı" spellcheck="false" autocomplete="off"></div><input class="password" type="password" placeholder="Giriş şifresi (isteğe bağlı)" autocomplete="off"><div class="actrl"><button class="start">▶ Başlat</button><button class="stop">■ Durdur</button></div><span class="status">Bekliyor</span>`;
   const input = row.querySelector('.username');
   input.value = (saved.names && saved.names[i - 1]) || '';
   row.querySelector('.start').addEventListener('click', () => startRow(row));
