@@ -2,6 +2,9 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const mineflayer = require('mineflayer');
 
+// Bağlanamazsa (oyuna giremeden hata/zaman aşımı/atılma) yeniden deneme bekleme süresi
+const FAIL_RETRY_MS = 5 * 60 * 1000; // 5 dakika
+
 let win;
 const sessions = new Map(); // hesap adı -> oturum
 
@@ -66,14 +69,16 @@ function scheduleReconnect(s) {
     return;
   }
   s.retry += 1;
-  let delay = Math.min(5000 * 2 ** (s.retry - 1), 60000); // 5, 10, 20, 40, 60, 60...
-  if (/throttl|too fast|too quickly|çok hızlı/i.test(reason)) delay = Math.max(delay, 30000);
-  sendStatus(name, 'Yeniden bağlanacak', `${Math.round(delay / 1000)} sn sonra — ${reason}`);
+  // Oyuna girdikten sonra kopmuşsa hızlı dene; hiç bağlanamıyorsa 5 dk bekle
+  let delay = s.spawned ? Math.min(5000 * 2 ** (s.retry - 1), 60000) : FAIL_RETRY_MS;
+  const wait = delay >= 60000 ? `${Math.round(delay / 60000)} dk` : `${Math.round(delay / 1000)} sn`;
+  sendStatus(name, 'Yeniden bağlanacak', `${wait} sonra — ${reason}`);
   clearTimeout(s.retryTimer);
   s.retryTimer = setTimeout(() => { if (s.wantRun && !s.bot) startBot(s); }, delay);
 }
 
 function startBot(s) {
+  s.spawned = false;
   const { name, host, port, version, password, authMode } = s.params;
   let bot;
   try {
