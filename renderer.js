@@ -1,9 +1,16 @@
 const $ = id => document.getElementById(id);
 const accountsEl = $('accounts'), out = $('out');
 const KEY = 'kucukadams-afk-settings-v1';
-const COLORS = ['#6ee7a0', '#7cc4ff', '#ffd479', '#ff9ecb', '#c4a1ff', '#ff9f7a', '#7ee8e0', '#d6e66a', '#f0a0ff', '#9fb4ff'];
 const MAX_LINES = 800;
 const lines = [];
+
+// ---- Logo ----
+(() => {
+  const map = { a: '#46d3c9', b: '#2fa59d', c: '#8ff0e8' };
+  const p = 'acaabaabbbabbbbb';
+  $('logo').innerHTML = '<svg viewBox="0 0 4 4" shape-rendering="crispEdges" aria-hidden="true">' +
+    [...p].map((k, i) => `<rect x="${i % 4}" y="${(i / 4) | 0}" width="1" height="1" fill="${map[k]}"/>`).join('') + '</svg>';
+})();
 
 // ---- Kayıtlı ayarlar (IP, port, sürüm, isimler) ----
 let saved = {};
@@ -19,19 +26,38 @@ function save() {
   } catch {}
 }
 
+// ---- Hesap kimliği: isimden renk ve piksel avatar üret ----
+function hash(s) { let h = 2166136261; for (const ch of s) { h ^= ch.codePointAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
+function colorFor(name) { return name ? `hsl(${hash(name) % 360} 75% 70%)` : 'var(--faint)'; }
+function avatarSVG(name) {
+  if (!name) return '';
+  let seed = hash(name) || 1; const h = hash(name) % 360;
+  const rnd = () => { seed ^= seed << 13; seed >>>= 0; seed ^= seed >>> 17; seed ^= seed << 5; seed >>>= 0; return seed / 4294967296; };
+  let r = '';
+  for (let y = 0; y < 8; y++) for (let x = 0; x < 4; x++) {
+    const v = rnd();
+    if (v < 0.5) continue;
+    const c = v < 0.78 ? `hsl(${h} 70% 62%)` : `hsl(${(h + 40) % 360} 65% 46%)`;
+    r += `<rect x="${x}" y="${y}" width="1" height="1" fill="${c}"/><rect x="${7 - x}" y="${y}" width="1" height="1" fill="${c}"/>`;
+  }
+  return `<svg viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true">${r}</svg>`;
+}
+function updateAvatar(row) {
+  const name = row.querySelector('.username').value.trim();
+  const av = row.querySelector('.avatar');
+  av.innerHTML = avatarSVG(name);
+  av.classList.toggle('empty', !name);
+}
+
 // ---- Konsol ----
 function rowFor(name) {
   const rows = [...accountsEl.children];
   return rows.find(r => r.dataset.active === name) || rows.find(r => r.querySelector('.username').value.trim() === name);
 }
-function colorFor(name) {
-  const row = name ? rowFor(name) : null;
-  return row ? COLORS[[...accountsEl.children].indexOf(row) % COLORS.length] : '#6c8c77';
-}
 function makeLine(l) {
   const d = document.createElement('div'); d.className = 'line ' + l.kind;
   const t = document.createElement('span'); t.className = 'time'; t.textContent = l.time; d.appendChild(t);
-  if (l.name) { const g = document.createElement('span'); g.className = 'tag'; g.style.color = l.color; g.textContent = `[${l.name}]`; d.appendChild(g); }
+  if (l.name) { const g = document.createElement('span'); g.className = 'tag'; g.style.color = l.color; g.textContent = l.name; d.appendChild(g); }
   const m = document.createElement('span'); m.className = 'msg'; m.textContent = l.text; d.appendChild(m);
   return d;
 }
@@ -65,7 +91,7 @@ function setStatus(row, status, detail) {
 async function startRow(row) {
   const name = row.querySelector('.username').value.trim(), host = $('host').value.trim();
   if (!name || !host) return sys('Önce hesap adını ve sunucu IP adresini gir.', 'err');
-  if (!/^[A-Za-z0-9_]{3,16}$/.test(name)) sys(`${name}: uyarı: kullanıcı adı 3-16 karakter olmalı, yalnızca harf, rakam ve _ içermeli.`, 'err');
+  if (!/^[A-Za-z0-9_]{3,16}$/.test(name)) sys(`${name}: kullanıcı adı 3-16 karakter olmalı, yalnızca harf, rakam ve _ içermeli. Sunucu reddedebilir.`, 'err');
   row.dataset.active = name;
   const r = await window.client.connect({
     name, host, port: $('port').value, version: $('version').value,
@@ -79,9 +105,15 @@ async function startRow(row) {
 
 for (let i = 1; i <= 10; i++) {
   const row = document.createElement('div'); row.className = 'account'; row.dataset.state = 'off';
-  row.innerHTML = `<div class="ahead"><span class="num">${String(i).padStart(2, '0')}</span><input class="username" maxlength="16" placeholder="Hesap ${i} adı" spellcheck="false" autocomplete="off"></div><input class="password" type="password" placeholder="Giriş şifresi (isteğe bağlı)" autocomplete="off"><div class="actrl"><button class="start">▶ Başlat</button><button class="stop">■ Durdur</button></div><span class="status">Bekliyor</span>`;
+  row.innerHTML = `<div class="avatar empty"></div><div class="info"><input class="username" maxlength="16" placeholder="Hesap ${i} adı" spellcheck="false" autocomplete="off"><span class="status">Bekliyor</span></div><div class="btns"><button class="pwbtn ghost" type="button" title="Giriş şifresi">Şifre</button><button class="start primary" type="button">Başlat</button><button class="stop" type="button">Durdur</button></div><input class="pw password" type="password" placeholder="Giriş şifresi (isteğe bağlı)" autocomplete="off">`;
   const input = row.querySelector('.username');
   input.value = (saved.names && saved.names[i - 1]) || '';
+  updateAvatar(row);
+  input.addEventListener('input', () => updateAvatar(row));
+  row.querySelector('.pwbtn').addEventListener('click', () => {
+    row.classList.toggle('open');
+    if (row.classList.contains('open')) row.querySelector('.password').focus();
+  });
   row.querySelector('.start').addEventListener('click', () => startRow(row));
   row.querySelector('.stop').addEventListener('click', async () => {
     const name = row.dataset.active || input.value.trim();
@@ -164,5 +196,3 @@ async function sendChat() {
 }
 $('chatSend').onclick = sendChat;
 $('chatText').addEventListener('keydown', e => { if (e.key === 'Enter') sendChat(); });
-
-sys('Hazır. Sunucu bilgilerini ve hesap adlarını gir; ayarlar otomatik kaydedilir.');

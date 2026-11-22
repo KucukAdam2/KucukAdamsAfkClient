@@ -1,40 +1,91 @@
+:root{--bg:#171d2a;--panel:#1f2737;--row:#1a2131;--raise:#29334a;--line:#34405a;--text:#e9edf5;--dim:#8f9bb5;--faint:#5d6a86;--accent:#46d3c9;--accent-ink:#08201e;--run:#62d06a;--wait:#f0b840;--err:#ee6a55;--off:#4a566f}
 *{box-sizing:border-box}
-html,body{height:100%}
-body{margin:0;background:#070b09;color:#dfeae3;font:13px "Segoe UI",Arial,sans-serif;overflow:hidden}
-.app{display:grid;grid-template-rows:auto auto minmax(0,1fr);height:100vh}
-.top{display:flex;align-items:flex-end;gap:16px;padding:12px 16px;background:#0c130f;border-bottom:1px solid #1d2d24}
-.brand h1{margin:0;font-size:19px;letter-spacing:.3px;white-space:nowrap}.brand h1 span{color:#55e58b}
-.brand p{margin:3px 0 0;color:#7f9487;font-size:11px}
-.srv{display:flex;align-items:flex-end;gap:10px;flex:1;min-width:0}
-.ip{flex:1;min-width:140px}.w90{width:90px}.w150{width:150px}.w190{width:190px}
-label{display:grid;gap:5px;color:#9fb2a6;font-size:11px}
-input,select{width:100%;background:#070d09;color:#e5eee8;border:1px solid #2b3f33;border-radius:6px;padding:8px 9px;outline:none;font:inherit}
-input:focus,select:focus{border-color:#55e58b}
-.check{display:flex;align-items:center;gap:7px;font-size:12px;color:#b6c7bb;white-space:nowrap;padding-bottom:8px}.check input{width:auto}
-.mini{display:flex;gap:6px}
-button{border:0;border-radius:6px;padding:8px 12px;cursor:pointer;font:inherit;font-weight:600;background:#26352c;color:#d7e5db;white-space:nowrap}
-button:hover{filter:brightness(1.18)}
-.go,.start{background:#36c875;color:#06130a}
-.accwrap{padding:10px 16px 8px;background:#0a110d;border-bottom:1px solid #1d2d24}
-.accounts{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
-.account{display:grid;gap:6px;background:#0f1812;border:1px solid #1f2f26;border-radius:8px;padding:8px}
-.ahead{display:grid;grid-template-columns:20px 1fr;gap:6px;align-items:center}
-.num{color:#6c8c77;font-size:11px;text-align:center}
-.actrl{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.account button{padding:6px 0}
-.status{font-size:11px;color:#8da397;display:flex;align-items:center;gap:6px;min-height:14px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-.status::before{content:"";width:8px;height:8px;border-radius:50%;background:#4b5c52;flex:none}
-.account[data-state=run] .status::before{background:#36c875}
-.account[data-state=wait] .status::before{background:#e8c04a}
-.account[data-state=err] .status::before{background:#ef5b5b}
-.hint{color:#6f8478;font-size:11px;margin:7px 0 0}
-.term{display:flex;flex-direction:column;min-width:0;min-height:0}
-.termbar{display:flex;align-items:center;gap:10px;padding:8px 16px;border-bottom:1px solid #1d2d24;background:#0a110d;color:#65ee9b;font:12px Consolas,monospace}
-.termbar select{width:200px;margin-left:auto}
-.out{flex:1;min-height:0;overflow-y:auto;padding:10px 16px;font:13px/1.55 Consolas,"Cascadia Mono",monospace;background:#050806}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--text);font:13px/1.4 "Segoe UI",system-ui,sans-serif;overflow:hidden}
+.app{display:flex;flex-direction:column;height:100vh}
+
+/* üst çubuk */
+.bar{display:flex;align-items:center;gap:26px;padding:12px 18px;background:var(--panel);border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:11px;flex:none}
+.logomark svg{width:30px;height:30px;display:block}
+.logo h1{margin:0;font-size:15px;font-weight:700;letter-spacing:.2px;white-space:nowrap}
+.logo small{display:block;color:var(--dim);font-size:11px;margin-top:1px}
+.fields{display:flex;align-items:flex-end;gap:10px;flex:1;min-width:0}
+label{display:grid;gap:4px;font-size:11px;color:var(--dim)}
+.f-ip{flex:1;min-width:150px}.f-port{width:84px}.f-ver{width:140px}.f-auth{width:170px}
+input:not([type=checkbox]),select{width:100%;background:#121823;color:var(--text);border:1px solid var(--line);border-radius:5px;padding:7px 9px;outline:none;font:inherit}
+input:not([type=checkbox]):focus,select:focus{border-color:var(--accent)}
+::placeholder{color:var(--faint)}
+.toggle{display:flex;align-items:center;gap:8px;color:var(--text);font-size:12px;padding-bottom:6px;cursor:pointer;position:relative;white-space:nowrap}
+.toggle input{position:absolute;opacity:0;width:0;height:0}
+.toggle i{width:30px;height:16px;border-radius:8px;background:var(--raise);border:1px solid var(--line);position:relative;transition:background .15s}
+.toggle i::after{content:"";position:absolute;top:2px;left:2px;width:10px;height:10px;border-radius:50%;background:var(--dim);transition:transform .15s}
+.toggle input:checked + i{background:var(--accent);border-color:var(--accent)}
+.toggle input:checked + i::after{transform:translateX(14px);background:var(--accent-ink)}
+.toggle input:focus-visible + i{outline:2px solid var(--accent);outline-offset:2px}
+
+/* düğmeler */
+button{font:inherit;font-weight:600;border:1px solid transparent;border-radius:5px;padding:7px 12px;cursor:pointer;white-space:nowrap;color:var(--text);background:var(--raise)}
+button:hover{background:#34405d}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.primary{background:var(--accent);color:var(--accent-ink)}
+.primary:hover{background:#63e2d9}
+.ghost{background:transparent;border-color:var(--line);color:var(--dim)}
+.ghost:hover{color:var(--text);background:var(--raise)}
+
+/* gövde */
+.body{flex:1;display:grid;grid-template-columns:350px minmax(0,1fr);min-height:0}
+.rail{display:flex;flex-direction:column;background:var(--panel);border-right:1px solid var(--line);min-height:0}
+.rail-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px 8px}
+h2{margin:0;font-size:13px;font-weight:600}
+.rail-actions{display:flex;gap:6px}
+.rail-actions button{padding:5px 10px;font-size:12px}
+.accounts{flex:1;overflow-y:auto;padding:2px 10px 8px;display:flex;flex-direction:column;gap:4px;min-height:0}
+.foot{margin:0;padding:8px 14px 10px;color:var(--faint);font-size:11px;border-top:1px solid var(--line)}
+
+/* hesap satırı */
+.account{display:grid;grid-template-columns:38px minmax(0,1fr) auto;gap:4px 10px;align-items:center;padding:7px 8px 7px 8px;background:var(--row);border-left:3px solid var(--off);border-radius:0 8px 8px 0}
+.account[data-state=run]{border-left-color:var(--run)}
+.account[data-state=wait]{border-left-color:var(--wait)}
+.account[data-state=err]{border-left-color:var(--err)}
+.avatar{width:38px;height:38px;background:#121823;border:1px solid var(--line)}
+.avatar.empty{border-style:dashed;background:transparent}
+.avatar svg{display:block;width:100%;height:100%}
+.info{min-width:0;display:grid;gap:1px}
+.account .username{background:transparent;border-color:transparent;padding:3px 6px;font-weight:600;font-size:13px}
+.account .username:hover{border-color:var(--line)}
+.account .username:focus{background:#121823}
+.status{font-size:11px;color:var(--dim);padding:0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.account[data-state=err] .status{color:var(--err)}
+.account[data-state=run] .status{color:var(--run)}
+.btns{display:flex;gap:4px;align-items:center}
+.account button{padding:5px 10px;font-size:12px}
+.account .stop{background:transparent;border-color:var(--err);color:var(--err)}
+.account .stop:hover{background:rgba(238,106,85,.14)}
+.account[data-active] .start{display:none}
+.account:not([data-active]) .stop{display:none}
+.pw{grid-column:1 / -1;display:none}
+.account.open .pw{display:block}
+
+/* konsol */
+.term{display:flex;flex-direction:column;min-width:0;min-height:0;background:var(--bg)}
+.term-head{display:flex;align-items:center;gap:10px;padding:12px 18px 8px}
+.term-head select{width:190px;margin-left:auto}
+.term-head button{padding:6px 12px}
+.out{flex:1;min-height:0;overflow-y:auto;margin:0 18px;padding:10px 14px;background:#0f141d;border:1px solid var(--line);border-radius:8px;font:13px/1.65 "Cascadia Mono",Consolas,monospace}
+.out:empty::before{content:"Henüz kayıt yok. Soldan bir hesap başlat; sunucunun mesajları burada görünür.";color:var(--faint);font-family:"Segoe UI",system-ui,sans-serif}
 .line{white-space:pre-wrap;word-break:break-word}
-.time{color:#4d6356;margin-right:8px}
-.tag{margin-right:8px;font-weight:700}
-.line.sys .msg{color:#86a592}.line.err .msg{color:#ff8a8a}.line.me .msg{color:#7cc4ff}.line.chat .msg{color:#e5eee8}
-.inputbar{display:grid;grid-template-columns:170px auto 1fr 90px;gap:8px;align-items:center;padding:10px 16px;border-top:1px solid #1d2d24;background:#0a110d}
-.prompt{color:#55e58b;font:bold 16px Consolas,monospace}
+.time{color:var(--faint);margin-right:8px}
+.tag{font-weight:600;margin-right:8px}
+.line.sys .msg{color:var(--dim)}
+.line.err .msg{color:var(--err)}
+.line.me .msg{color:var(--accent)}
+.line.chat .msg{color:var(--text)}
+.send{display:flex;gap:8px;padding:12px 18px 14px}
+.send select{width:170px;flex:none}
+.send input{flex:1}
+
+::-webkit-scrollbar{width:10px}
+::-webkit-scrollbar-thumb{background:var(--raise);border-radius:5px;border:2px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar-thumb:hover{background:var(--line);background-clip:padding-box}
+@media(max-width:1120px){.logo small{display:none}.f-auth{width:140px}.f-ver{width:120px}}

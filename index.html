@@ -3,25 +3,27 @@
 <title>KucukAdamsAfkClient</title><link rel="stylesheet" href="style.css"></head>
 <body>
 <div class="app">
-  <header class="top">
-    <div class="brand"><h1>KucukAdams<span>Afk</span>Client</h1><p>Ayarlar otomatik kaydedilir</p></div>
-    <div class="srv">
-      <label class="ip">Sunucu IP<input id="host" placeholder="sunucu.adresi.net" spellcheck="false" autocomplete="off"></label>
-      <label class="w90">Port<input id="port" type="number" value="25565"></label>
-      <label class="w150">Sürüm<select id="version"><option value="auto">Otomatik algıla</option><option>1.21.11</option><option>1.21.10</option><option>1.21.8</option><option>1.21.4</option><option>1.20.4</option><option>1.20.1</option><option>1.19.4</option><option>1.18.2</option><option>1.16.5</option><option>1.12.2</option><option>1.8.9</option></select></label>
-      <label class="w190">Giriş komutu<select id="authMode"><option value="login">/login şifre</option><option value="register">/register şifre şifre</option><option value="none">Gönderme</option></select></label>
-      <label class="check"><input type="checkbox" id="autoRe" checked> Otomatik yeniden bağlan</label>
+  <header class="bar">
+    <div class="logo"><span id="logo" class="logomark"></span><div><h1>KucukAdamsAfkClient</h1><small>AFK hesap yöneticisi</small></div></div>
+    <div class="fields">
+      <label class="f-ip">Sunucu<input id="host" placeholder="sunucu.adresi.net" spellcheck="false" autocomplete="off"></label>
+      <label class="f-port">Port<input id="port" type="number" value="25565"></label>
+      <label class="f-ver">Sürüm<select id="version"><option value="auto">Otomatik algıla</option><option>1.21.11</option><option>1.21.10</option><option>1.21.8</option><option>1.21.4</option><option>1.20.4</option><option>1.20.1</option><option>1.19.4</option><option>1.18.2</option><option>1.16.5</option><option>1.12.2</option><option>1.8.9</option></select></label>
+      <label class="f-auth">Giriş komutu<select id="authMode"><option value="login">/login şifre</option><option value="register">/register şifre şifre</option><option value="none">Gönderme</option></select></label>
+      <label class="toggle"><input type="checkbox" id="autoRe" checked><i></i><span>Otomatik yeniden bağlan</span></label>
     </div>
-    <div class="mini"><button id="all" class="go">Tümünü başlat</button><button id="stopAll">Tümünü durdur</button></div>
   </header>
-  <section class="accwrap">
-    <div id="accounts" class="accounts"></div>
-    <p class="hint">Hesap adını değiştirirsen çalışan hesap durdurulur ve yeni isimle yeniden başlar. Şifreler güvenlik için kaydedilmez.</p>
-  </section>
-  <section class="term">
-    <div class="termbar"><span>● CONSOLE</span><select id="view"></select><button id="clear">Temizle</button></div>
-    <div id="out" class="out"></div>
-    <div class="inputbar"><select id="chatTarget"></select><span class="prompt">&gt;</span><input id="chatText" maxlength="250" placeholder="Mesaj ya da /komut yaz, Enter ile gönder" autocomplete="off" spellcheck="false"><button id="chatSend" class="go">Gönder</button></div>
-  </section>
+  <div class="body">
+    <aside class="rail">
+      <div class="rail-head"><h2>Hesaplar</h2><div class="rail-actions"><button id="all" class="primary">Tümünü başlat</button><button id="stopAll" class="ghost">Durdur</button></div></div>
+      <div id="accounts" class="accounts"></div>
+      <p class="foot">Şifreler kaydedilmez. İsmi değiştirirsen hesap yeni adla yeniden başlar.</p>
+    </aside>
+    <main class="term">
+      <div class="term-head"><h2>Konsol</h2><select id="view"></select><button id="clear" class="ghost">Temizle</button></div>
+      <div id="out" class="out"></div>
+      <div class="send"><select id="chatTarget"></select><input id="chatText" maxlength="250" placeholder="Mesaj ya da /komut yaz, Enter ile gönder" autocomplete="off" spellcheck="false"><button id="chatSend" class="primary">Gönder</button></div>
+    </main>
+  </div>
 </div>
 <script src="renderer.js"></script></body></html>

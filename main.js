@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, screen } = require('electron');
 const path = require('path');
 const mineflayer = require('mineflayer');
 
@@ -175,11 +175,15 @@ function stopSession(name, msg) {
 }
 
 function createWindow() {
+  // Küçük ekranlarda (örn. 1366x768) pencere ekrana sığsın
+  const wa = screen.getPrimaryDisplay().workAreaSize;
   win = new BrowserWindow({
-    width: 1320, height: 800, minWidth: 1100, minHeight: 680,
-    backgroundColor: '#090d0b',
+    width: Math.min(1240, wa.width), height: Math.min(740, wa.height),
+    minWidth: 1000, minHeight: 600,
+    backgroundColor: '#171d2a', autoHideMenuBar: true, title: 'KucukAdamsAfkClient',
     webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, nodeIntegration: false }
   });
+  win.removeMenu();
   win.loadFile('index.html');
 }
 app.whenReady().then(createWindow);
